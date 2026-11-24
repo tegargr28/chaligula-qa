@@ -1,0 +1,122 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0 -- /home/hatch/workspace/chaligula-qa/automation/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/hatch/workspace/chaligula-qa/automation
+configfile: pytest.ini
+plugins: playwright-0.10.0
+collecting ... collected 4 items
+
+tests/test_ui_smoke.py::test_homepage_loads_and_lists_products[chromium] FAILED [ 25%]
+tests/test_ui_smoke.py::test_product_page_shows_price_and_sale[chromium] FAILED [ 50%]
+tests/test_ui_smoke.py::test_login_and_logout_with_demo_customer[chromium] FAILED [ 75%]
+tests/test_ui_smoke.py::test_add_to_cart_requires_colour_then_succeeds[chromium] FAILED [100%]
+
+=================================== FAILURES ===================================
+_______________ test_homepage_loads_and_lists_products[chromium] _______________
+tests/test_ui_smoke.py:19: in test_homepage_loads_and_lists_products
+    page.goto(WEB_BASE + "/")
+.venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:18561: in goto
+    self._sync(
+.venv/lib/python3.12/site-packages/playwright/_impl/page.py:600: in goto
+    return await self._main_frame.goto(
+.venv/lib/python3.12/site-packages/playwright/_impl/frame.py:217: in goto
+    await self._channel.goto(
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:398: in _mapped
+    return mapper(await awaitable)
+                  ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: in run_async
+    return await func()
+           ^^^^^^^^^^^^
+E   playwright._impl._errors.Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://chaligula.netlify.app/
+E   Call log:
+E     - navigating to "https://chaligula.netlify.app/", waiting until "load"
+_______________ test_product_page_shows_price_and_sale[chromium] _______________
+tests/test_ui_smoke.py:28: in test_product_page_shows_price_and_sale
+    page.goto(WEB_BASE + "/product/raven-oversized-tee")
+.venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:18561: in goto
+    self._sync(
+.venv/lib/python3.12/site-packages/playwright/_impl/page.py:600: in goto
+    return await self._main_frame.goto(
+.venv/lib/python3.12/site-packages/playwright/_impl/frame.py:217: in goto
+    await self._channel.goto(
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:398: in _mapped
+    return mapper(await awaitable)
+                  ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: in run_async
+    return await func()
+           ^^^^^^^^^^^^
+E   playwright._impl._errors.Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://chaligula.netlify.app/product/raven-oversized-tee
+E   Call log:
+E     - navigating to "https://chaligula.netlify.app/product/raven-oversized-tee", waiting until "load"
+______________ test_login_and_logout_with_demo_customer[chromium] ______________
+tests/test_ui_smoke.py:34: in test_login_and_logout_with_demo_customer
+    page.goto(WEB_BASE + "/auth/login")
+.venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:18561: in goto
+    self._sync(
+.venv/lib/python3.12/site-packages/playwright/_impl/page.py:600: in goto
+    return await self._main_frame.goto(
+.venv/lib/python3.12/site-packages/playwright/_impl/frame.py:217: in goto
+    await self._channel.goto(
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:398: in _mapped
+    return mapper(await awaitable)
+                  ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: in run_async
+    return await func()
+           ^^^^^^^^^^^^
+E   playwright._impl._errors.Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://chaligula.netlify.app/auth/login
+E   Call log:
+E     - navigating to "https://chaligula.netlify.app/auth/login", waiting until "load"
+___________ test_add_to_cart_requires_colour_then_succeeds[chromium] ___________
+tests/test_ui_smoke.py:44: in test_add_to_cart_requires_colour_then_succeeds
+    page.goto(WEB_BASE + "/product/raven-oversized-tee")
+.venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:18561: in goto
+    self._sync(
+.venv/lib/python3.12/site-packages/playwright/_impl/page.py:600: in goto
+    return await self._main_frame.goto(
+.venv/lib/python3.12/site-packages/playwright/_impl/frame.py:217: in goto
+    await self._channel.goto(
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:398: in _mapped
+    return mapper(await awaitable)
+                  ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: in run_async
+    return await func()
+           ^^^^^^^^^^^^
+E   playwright._impl._errors.Error: Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://chaligula.netlify.app/product/raven-oversized-tee
+E   Call log:
+E     - navigating to "https://chaligula.netlify.app/product/raven-oversized-tee", waiting until "load"
+=============================== warnings summary ===============================
+tests/test_ui_smoke.py::test_homepage_loads_and_lists_products[chromium]
+  /home/hatch/workspace/chaligula-qa/automation/.venv/lib/python3.12/site-packages/_pytest/fixtures.py:1392: PytestRemovedIn10Warning: Session-scoped fixtures defined as instance methods are deprecated.
+  Instance attributes set in the 'base_url' fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use a @classmethod decorator below @pytest.fixture and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_ui_smoke.py::test_homepage_loads_and_lists_products[chromium]
+FAILED tests/test_ui_smoke.py::test_product_page_shows_price_and_sale[chromium]
+FAILED tests/test_ui_smoke.py::test_login_and_logout_with_demo_customer[chromium]
+FAILED tests/test_ui_smoke.py::test_add_to_cart_requires_colour_then_succeeds[chromium]
+========================= 4 failed, 1 warning in 2.23s =========================

@@ -1,0 +1,37 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0 -- /home/hatch/workspace/chaligula-qa/automation/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/hatch/workspace/chaligula-qa/automation
+configfile: pytest.ini
+plugins: playwright-0.10.0
+collecting ... collected 26 items
+
+tests/test_api_auth.py::test_login_valid_user_returns_token PASSED       [  3%]
+tests/test_api_auth.py::test_login_wrong_password_rejected PASSED        [  7%]
+tests/test_api_auth.py::test_login_unregistered_email_rejected PASSED    [ 11%]
+tests/test_api_auth.py::test_login_empty_credentials_rejected PASSED     [ 15%]
+tests/test_api_auth.py::test_register_new_user_then_duplicate_rejected PASSED [ 19%]
+tests/test_api_auth.py::test_register_invalid_email_rejected PASSED      [ 23%]
+tests/test_api_auth.py::test_register_short_password_rejected PASSED     [ 26%]
+tests/test_api_auth.py::test_profile_with_valid_token PASSED             [ 30%]
+tests/test_api_auth.py::test_profile_without_token_rejected PASSED       [ 34%]
+tests/test_api_auth.py::test_profile_with_invalid_token_rejected PASSED  [ 38%]
+tests/test_api_auth.py::test_admin_login_has_admin_role PASSED           [ 42%]
+tests/test_api_auth.py::test_admin_orders_readable_by_admin PASSED       [ 46%]
+tests/test_api_auth.py::test_admin_orders_forbidden_for_customer PASSED  [ 50%]
+tests/test_api_auth.py::test_admin_orders_rejected_without_token PASSED  [ 53%]
+tests/test_api_catalog_orders.py::test_product_list_returns_seeded_products PASSED [ 57%]
+tests/test_api_catalog_orders.py::test_product_detail_by_slug_has_variants PASSED [ 61%]
+tests/test_api_catalog_orders.py::test_unknown_product_slug_returns_404 PASSED [ 65%]
+tests/test_api_catalog_orders.py::test_pagination_limit_is_honoured PASSED [ 69%]
+tests/test_api_catalog_orders.py::test_search_filters_products PASSED    [ 73%]
+tests/test_api_catalog_orders.py::test_category_filter_returns_only_that_category PASSED [ 76%]
+tests/test_api_catalog_orders.py::test_category_list_has_four_categories PASSED [ 80%]
+tests/test_api_catalog_orders.py::test_order_history_requires_login PASSED [ 84%]
+tests/test_api_catalog_orders.py::test_create_order_with_empty_items_rejected PASSED [ 88%]
+tests/test_api_catalog_orders.py::test_address_list_contains_created_address PASSED [ 92%]
+tests/test_api_catalog_orders.py::test_create_order_and_see_it_in_history PASSED [ 96%]
+tests/test_api_catalog_orders.py::test_order_above_stock_is_rejected_cleanly XFAIL [100%]
+
+- generated xml file: /home/hatch/workspace/chaligula-qa/reports/junit-api.xml -
+======================== 25 passed, 1 xfailed in 15.05s ========================
