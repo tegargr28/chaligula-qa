@@ -77,7 +77,8 @@ for row in ws.iter_rows(min_row=1, max_row=ws.max_row, max_col=4):
                               "test cases, API cases, defects and execution evidence for the "
                               "CHALIGULA e-commerce web app. Phase 1 covers the live deployment: "
                               "catalog, accounts, bag, addresses, orders and admin access. "
-                              "Payment completion is blocked until Midtrans sandbox keys are installed.")
+                              "Phase 2 adds online payment through Xendit test mode, executed "
+                              "end to end on 2026-11-25 (PAY-TC-001, EXEC-004).")
 
 # Sheet subtitles that still describe the banking project
 SUBTITLES = {
@@ -104,7 +105,7 @@ requirements = [
     ("FR-008", "Order Placement", "A logged-in user shall be able to place an order for in-stock variants; invalid orders are rejected with a clear validation error.", "API: POST /api/orders", "High", "A valid order is created (201) with correct totals and status PENDING; empty item list returns 400; quantity above stock must be rejected with a 400 validation error.", "Defect found", "Valid order verified (order CHG-MWUZLV7K-2287). Over-stock quantity returns HTTP 500 instead of 400: BUG-001."),
     ("FR-009", "Order History", "A logged-in user shall be able to see their own orders.", "API: GET /api/orders/my", "Medium", "The list returns only the orders of the token owner; without a token it returns 401.", "Validated", "API level, EXEC-002. Note: GET /api/orders without /my returns 404."),
     ("FR-010", "Admin Access Control", "Admin functions shall be reachable only with an admin account; customers and anonymous calls are rejected.", "API: GET /api/admin/orders with admin, customer and no token", "High", "Admin token returns 200; customer token returns 403; no token returns 401; admin login returns role ADMIN.", "Validated", "API level, EXEC-002. Admin UI login not executed: the browser credential vault holds only the customer demo login."),
-    ("FR-011", "Online Payment", "A customer shall be able to pay for an order through Midtrans.", "Checkout flow (not yet configured)", "High", "A created order can be paid in the Midtrans sandbox and its status changes from PENDING.", "Not Validated", "Blocked for Phase 2: the deployment still uses placeholder Midtrans keys, so payment cannot complete. Orders stay PENDING."),
+    ("FR-011", "Online Payment", "A customer shall be able to pay for an order through an online payment gateway (Xendit).", "Live checkout flow with Xendit test mode", "High", "A created order can be paid in the Xendit sandbox (test mode) and its status changes from PENDING to PAID.", "Validated", "Validated in Phase 2, EXEC-004: order CHG-MWV5GGWP-8715 paid through a simulated BCA virtual account; the Xendit webhook set the order and the payment to PAID."),
     ("FR-012", "Product Image Display", "Each product and category shall display its own image.", "Live homepage and catalog", "Medium", "Every product card shows the image that belongs to that product.", "Defect found", "All products and categories currently show the same placeholder sample image: BUG-002 (seed data uses one sample image URL)."),
 ]
 fill(ws, requirements)
@@ -125,7 +126,7 @@ scenarios = [
     ("SCN-008", "FR-008", "Order Placement", "Verify order creation for valid, empty and over-stock orders.", "Saved address and logged-in user", "API", "High", "Executed", "API level EXEC-002. One defect found: BUG-001."),
     ("SCN-009", "FR-009", "Order History", "Verify the order history returns the user's own orders and requires login.", "One order placed in SCN-008", "API", "Medium", "Executed", "API level EXEC-002."),
     ("SCN-010", "FR-010", "Admin Access Control", "Verify admin endpoints accept admins and reject customers and anonymous calls.", "Admin and customer demo accounts exist", "API", "High", "Executed", "API level EXEC-002."),
-    ("SCN-011", "FR-011", "Online Payment", "Verify a customer can complete a Midtrans payment for a created order.", "Midtrans sandbox keys installed", "UI/API", "High", "Blocked", "Placeholder Midtrans keys in the deployment. Planned for Phase 2."),
+    ("SCN-011", "FR-011", "Online Payment", "Verify a customer can complete a Xendit test-mode payment for a created order.", "Xendit test-mode keys installed on the server", "UI/API", "High", "Executed", "Phase 2, EXEC-004."),
     ("SCN-012", "FR-012", "Product Image Display", "Verify each product shows its own image on the homepage and catalog.", "Live site reachable", "UI", "Medium", "Executed", "Defect found: BUG-002."),
 ]
 fill(ws, scenarios)
@@ -151,7 +152,7 @@ test_cases = [
     ("CART-TC-001", "SCN-006", "Shopping Cart", "Adding to the bag without a colour is blocked", "Product page of raven-oversized-tee open", "1. Select size M only\n2. Click Add to Cart", "Size M, no colour", "The item is not added and the page asks for a colour first.", "The message 'Select a color' appeared and nothing was added.", "Pass", "High", TESTER, DATE, "EXEC-001"),
     ("CART-TC-002", "SCN-006", "Shopping Cart", "Adding to the bag with size and colour works", "Product page of raven-oversized-tee open", "1. Select size M\n2. Select colour Onyx\n3. Click Add to Cart", "Raven Oversized Tee, size M, colour Onyx", "The bag drawer opens with 'Added to your bag' and the bag badge shows 1.", "Drawer opened with 'Added to your bag'; the cart badge became 1.", "Pass", "High", TESTER, DATE, "EXEC-001"),
     ("CART-TC-003", "SCN-006", "Shopping Cart", "Cart page total matches the item price", "One item in the bag (CART-TC-002)", "1. Open /cart\n2. Compare the item row and the totals", "Raven Oversized Tee, Rp320.000, quantity 1", "The cart shows the item with size M and colour Onyx; subtotal and total are Rp320.000; shipping is 'Calculated at checkout'.", "Cart page showed exactly that: subtotal Rp320.000, total Rp320.000.", "Pass", "High", TESTER, DATE, "EXEC-001"),
-    ("PAY-TC-001", "SCN-011", "Online Payment", "Customer pays for an order with Midtrans", "Order placed; Midtrans sandbox keys installed", "1. Create an order\n2. Continue to payment\n3. Complete a sandbox payment\n4. Check the order status", "Midtrans sandbox test payment", "Payment completes and the order status changes from PENDING.", "", "Blocked", "High", TESTER, "", "Blocked: the deployment still uses placeholder Midtrans keys. Planned for Phase 2."),
+    ("PAY-TC-001", "SCN-011", "Online Payment", "Customer pays for an order with Xendit", "Order placed; Xendit test-mode keys installed on the server", "1. Create an order\n2. Continue to payment\n3. Complete the test-mode payment on the Xendit invoice page\n4. Check the order status", "Xendit test mode: simulated BCA virtual account payment", "Payment completes and the order status changes from PENDING to PAID.", "Checkout redirected to the Xendit test-mode invoice page (checkout-staging.xendit.co) for order CHG-MWV5GGWP-8715, total Rp415.000. The simulated BCA virtual account payment completed, the browser returned to the shop dashboard with 'Pembayaran berhasil!', and the order status was PAID. Verified again through GET /api/orders/my: provider xendit, payment status PAID, paidAt recorded.", "Pass", "High", TESTER, DATE, "EXEC-004. Phase 2: the shop switched from Midtrans to Xendit. Test mode only, no real money."),
 ]
 fill(ws, test_cases)
 
@@ -244,7 +245,7 @@ rtm = [
     ("FR-008", "Order placement with stock validation", "SCN-008", "", "API-ORD-002..005", "DB-ORD-001, DB-STK-001", "Fail", "BUG-001", "Valid orders pass; over-stock quantity returns HTTP 500."),
     ("FR-009", "Order history per user", "SCN-009", "", "API-ORD-001", "", "Pass (API level)", "", "Endpoint is GET /api/orders/my."),
     ("FR-010", "Admin access control", "SCN-010", "AUTH-TC-004", "API-AUTH-012, API-ADM-001..003", "", "Pass (API level)", "", "Admin UI login not executed (browser vault limitation)."),
-    ("FR-011", "Online payment with Midtrans", "SCN-011", "PAY-TC-001", "", "", "Blocked", "", "Placeholder Midtrans keys. Phase 2."),
+    ("FR-011", "Online payment with Xendit", "SCN-011", "PAY-TC-001", "", "", "Pass", "", "Phase 2: Xendit test mode, verified end to end in EXEC-004."),
     ("FR-012", "Product image display", "SCN-012", "HOME-TC-003", "", "", "Fail", "BUG-002", "Seed data uses one sample image for everything."),
 ]
 fill(ws, rtm)
@@ -266,6 +267,15 @@ if auto_path.exists():
         "Live site and API", auto["tool"], auto["result"],
         auto["evidence"], TESTER, auto["notes"],
     ))
+exec_rows.append((
+    "EXEC-004", DATE, "PAY-TC-001", "UI (manual browser session) + API read-back",
+    "Live site https://chaligula.netlify.app and Xendit test mode",
+    "Cloud browser; Xendit hosted invoice page; GET /api/orders/my read-back",
+    "Pass",
+    "Order CHG-MWV5GGWP-8715 (Crimson Signet Ring Rp390.000 + shipping Rp25.000 = Rp415.000); invoice on checkout-staging.xendit.co; simulated BCA virtual account payment",
+    TESTER,
+    "Phase 2 payment execution. The shop now uses Xendit test mode (the Midtrans route was abandoned because the old account could not be recovered). The Xendit webhook set the order and payment status to PAID. No real money was involved.",
+))
 fill(ws, exec_rows)
 
 # ------------------------------------------------------------------

@@ -146,7 +146,7 @@ order_body = {"items": [{"productId": pid, "variantId": variant_id, "quantity": 
               "address": "Jl. QA Test No. 1, Jakarta", "phone": "081234567890"}
 s, b = call("POST", "/api/orders", order_body, token=user_token)
 record("API-ORD-003", "Create an order for one in-stock variant", "POST", "/api/orders", None, s, b,
-       "observe: order creation and payment behaviour with placeholder Midtrans keys")
+       "observe: order creation returns a Xendit test-mode payment URL since Phase 2")
 
 s, b = call("POST", "/api/orders", {"items": []}, token=user_token)
 record("API-ORD-004", "Create an order with an empty item list", "POST", "/api/orders", 400, s, b)

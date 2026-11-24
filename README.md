@@ -22,6 +22,12 @@ This is my QA portfolio project for CHALIGULA, an e-commerce web app I deployed 
 - Automation: 26 API tests in the pytest suite — 25 passed and 1 expected failure that documents BUG-001. The 4 UI smoke tests are written and mirror the manual session; they could not run inside my sandbox because its proxy blocks the local browser, so their status is recorded honestly as blocked there. The same checks passed when I ran them manually in a browser.
 - Payment testing is blocked for now. The deployment still uses placeholder Midtrans keys, so orders stay in PENDING status. That is planned for Phase 2, together with the SQL test execution.
 
+## Phase 2 results (25 November 2026)
+
+- Online payment now runs on Xendit test mode. The shop was switched from Midtrans to Xendit (the old Midtrans account could not be recovered), the test-mode keys are installed on the server, and checkout redirects to a Xendit hosted invoice page.
+- PAY-TC-001 executed and passed end to end: order CHG-MWV5GGWP-8715 (Rp415.000) was paid with a simulated BCA virtual account payment, the Xendit webhook set the order and the payment to PAID, and the result was verified again through the API (EXEC-004 in the workbook). Test mode only — no real money was involved.
+- Still open: the 4 SQL cases are designed but not executed yet, and BUG-001 and BUG-002 are still open.
+
 ## Defects found
 
 - BUG-001 (Medium): ordering a quantity far above the available stock returns HTTP 500 "Internal server error" instead of a clean validation message. The order itself is correctly not created.

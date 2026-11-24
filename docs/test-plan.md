@@ -25,7 +25,7 @@ In scope for Phase 1:
 
 Out of scope for Phase 1:
 
-- Payment completion. The deployment uses placeholder Midtrans keys, so orders remain PENDING. Payment cases are written as Blocked and move to Phase 2 when sandbox keys are installed.
+- Payment completion. The deployment uses placeholder Midtrans keys, so orders remain PENDING. Payment cases are written as Blocked and move to Phase 2 when sandbox keys are installed. (Phase 2 update, 25 November 2026: the shop switched to Xendit test mode and PAY-TC-001 was executed and passed — see EXEC-004 in the workbook.)
 - Direct database testing. SQL cases are designed in the workbook and will be executed in Phase 2 with read-only access to the Neon database.
 - Performance and load testing.
 - Real product photography checks. The seed data uses one sample image for all products (logged as BUG-002).
