@@ -4,9 +4,11 @@ Everything runs against the live deployment:
   web  https://chaligula.netlify.app
   api  https://chaligula-api.vercel.app
 
-The demo accounts are the seeded ones from the project itself
-(see backend seed). They are public demo credentials, not personal
-accounts. Override through environment variables when needed.
+The demo customer account is the seeded one from the project itself
+(see backend seed); it is a public demo credential, not a personal
+account. The admin account is private: its password is never stored
+in this repo and must be provided through the CHALIGULA_ADMIN_PASSWORD
+environment variable. Admin-dependent tests skip when it is not set.
 """
 import os
 import time
@@ -24,7 +26,7 @@ DEMO_USER = {
 }
 DEMO_ADMIN = {
     "email": os.environ.get("CHALIGULA_ADMIN_EMAIL", "admin@chaligula.com"),
-    "password": os.environ.get("CHALIGULA_ADMIN_PASSWORD", "admin1234"),
+    "password": os.environ.get("CHALIGULA_ADMIN_PASSWORD", ""),
 }
 
 
@@ -47,6 +49,8 @@ def user_token():
 
 @pytest.fixture(scope="session")
 def admin_token():
+    if not DEMO_ADMIN["password"]:
+        pytest.skip("CHALIGULA_ADMIN_PASSWORD is not set; the admin account is private")
     r = api("POST", "/api/auth/login", DEMO_ADMIN)
     assert r.status_code == 200, f"demo admin login failed: {r.status_code} {r.text[:200]}"
     return r.json()["token"]

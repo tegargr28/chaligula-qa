@@ -3,9 +3,12 @@ Runs real requests against the live API and records actual results.
 No expected result is faked: each case stores the raw status and a
 verdict only where an expectation was defined in advance.
 """
-import json, urllib.request, urllib.error, datetime, pathlib
+import json, os, urllib.request, urllib.error, datetime, pathlib
 
 BASE = "https://chaligula-api.vercel.app"
+# The admin account is private. Its password is never stored in this
+# repo; provide it through the environment when admin cases should run.
+ADMIN_PASSWORD = os.environ.get("CHALIGULA_ADMIN_PASSWORD", "")
 OUT = pathlib.Path(__file__).resolve().parent.parent / "reports"
 OUT.mkdir(parents=True, exist_ok=True)
 
@@ -90,11 +93,16 @@ record("API-AUTH-010", "Profile without token is rejected", "GET", "/api/auth/me
 s, b = call("GET", "/api/auth/me", token="garbage.token.value")
 record("API-AUTH-011", "Profile with invalid token is rejected", "GET", "/api/auth/me", 401, s, b)
 
-s, b = call("POST", "/api/auth/login", {"email": "admin@chaligula.com", "password": "admin1234"})
-admin_token = b.get("token")
-role = (b.get("user") or {}).get("role")
-record("API-AUTH-012", "Admin login returns role ADMIN", "POST", "/api/auth/login", 200, s, b,
-       f"role={role}")
+if ADMIN_PASSWORD:
+    s, b = call("POST", "/api/auth/login", {"email": "admin@chaligula.com", "password": ADMIN_PASSWORD})
+    admin_token = b.get("token")
+    role = (b.get("user") or {}).get("role")
+    record("API-AUTH-012", "Admin login returns role ADMIN", "POST", "/api/auth/login", 200, s, b,
+           f"role={role}")
+else:
+    admin_token = None
+    record("API-AUTH-012", "Admin login returns role ADMIN", "POST", "/api/auth/login", None, None, {},
+           "Not Run: admin password not provided (set CHALIGULA_ADMIN_PASSWORD)")
 
 # ---------- PRODUCTS ----------
 s, b = call("GET", "/api/products")
@@ -156,18 +164,22 @@ record("API-ORD-005", "Create an order with quantity far above stock", "POST", "
        "observe: is over-stock quantity accepted?")
 
 # ---------- ADMIN AUTHORIZATION ----------
-for path in ("/api/admin/products", "/api/admin/orders", "/api/admin/users", "/api/admin/stats"):
-    s, b = call("GET", path, token=admin_token)
-    if s != 404:
-        record("API-ADM-001", f"Admin route {path} with admin token", "GET", path, 200, s, b)
-        s2, b2 = call("GET", path, token=user_token)
-        record("API-ADM-002", f"Admin route {path} with customer token is forbidden", "GET", path, 403, s2, b2)
-        s3, b3 = call("GET", path)
-        record("API-ADM-003", f"Admin route {path} without token is rejected", "GET", path, 401, s3, b3)
-        break
+if not admin_token:
+    record("API-ADM-001", "Admin authorization checks", "GET", "/api/admin/*", None, None, {},
+           "Not Run: admin password not provided (set CHALIGULA_ADMIN_PASSWORD)")
 else:
-    record("API-ADM-001", "Probe common admin routes", "GET", "/api/admin/*", None, 404, {},
-           "no admin route found at the probed paths")
+    for path in ("/api/admin/products", "/api/admin/orders", "/api/admin/users", "/api/admin/stats"):
+        s, b = call("GET", path, token=admin_token)
+        if s != 404:
+            record("API-ADM-001", f"Admin route {path} with admin token", "GET", path, 200, s, b)
+            s2, b2 = call("GET", path, token=user_token)
+            record("API-ADM-002", f"Admin route {path} with customer token is forbidden", "GET", path, 403, s2, b2)
+            s3, b3 = call("GET", path)
+            record("API-ADM-003", f"Admin route {path} without token is rejected", "GET", path, 401, s3, b3)
+            break
+    else:
+        record("API-ADM-001", "Probe common admin routes", "GET", "/api/admin/*", None, 404, {},
+               "no admin route found at the probed paths")
 
 stamp = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
 doc = {"executed_at": stamp, "base_url": BASE, "total": len(results),

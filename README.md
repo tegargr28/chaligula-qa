@@ -36,3 +36,5 @@ This is my QA portfolio project for CHALIGULA, an e-commerce web app I deployed 
 ## Test data
 
 The tests use the seeded demo accounts that ship with the app (a demo customer and a demo admin) plus synthetic accounts created only for testing, such as qa.phase1.tester@example.com. No real customer data is involved anywhere.
+
+Security note (25 November 2026): the demo admin password was changed and is not published anywhere anymore. The API runner and the automation suite read it from the CHALIGULA_ADMIN_PASSWORD environment variable and skip the admin cases when it is not set. The demo customer account stays public on purpose, so anyone can still try the shop.

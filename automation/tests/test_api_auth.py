@@ -5,7 +5,7 @@ authorization cases API-ADM-001 to API-ADM-003.
 """
 import pytest
 
-from conftest import DEMO_USER, api
+from conftest import DEMO_ADMIN, DEMO_USER, api
 
 pytestmark = pytest.mark.api
 
@@ -76,8 +76,9 @@ def test_profile_with_invalid_token_rejected():
 
 
 def test_admin_login_has_admin_role():
-    r = api("POST", "/api/auth/login",
-            {"email": "admin@chaligula.com", "password": "admin1234"})
+    if not DEMO_ADMIN["password"]:
+        pytest.skip("CHALIGULA_ADMIN_PASSWORD is not set; the admin account is private")
+    r = api("POST", "/api/auth/login", DEMO_ADMIN)
     assert r.status_code == 200
     assert r.json()["user"]["role"] == "ADMIN"
 
